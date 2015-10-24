@@ -6,8 +6,8 @@ import remote from 'remote';
 import React from 'react';
 import Join from 'react/lib/joinClasses';
 import Router from 'react-router';
-import RouterContainer from './Router';
-import Utils from './Utils';
+import RouterContainer from './utils/Router';
+import Utils from './utils/Utils';
 import routes from './AppRoutes';
 
 let Menu = remote.require('menu');

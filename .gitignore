@@ -1,5 +1,6 @@
 # Ignore .DS_Store files on mac
 .DS_Store
+.idea
 
 # Ignore electron, build, dist, identity
 cache

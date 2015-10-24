@@ -2,13 +2,13 @@
 
 import React from 'react';
 import {Route, DefaultRoute} from 'react-router';
-import App from './AppContainer';
-import Setup from './SetupContainer';
-import Search from './SearchContainer';
-import Detail from './DetailContainer';
-import Channel from './ChannelContainer';
-import Playlist from './PlaylistContainer';
-import Downloads from './DownloadsContainer';
+import App from './components/app/AppContainer';
+import Setup from './components/setup/SetupContainer';
+import Search from './components/search/SearchContainer';
+import Detail from './components/detail/DetailContainer';
+import Channel from './components/channel/ChannelContainer';
+import Playlist from './components/playlist/PlaylistContainer';
+import Downloads from './components/downloads/DownloadsContainer';
 
 const AppRoutes = (
   <Route name="app" path="/" handler={App}>

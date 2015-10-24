@@ -10,6 +10,10 @@ var sequence = require('run-sequence');
 var gulp = require('gulp');
 var fs = require('fs');
 var del = require('del');
+var webpack = require('webpack');
+var webpackConfig = require('./webpack.config');
+var shell = require('shelljs');
+var Yoda = require('electron-connect').server.create();
 var $ = require('gulp-load-plugins')({
   rename: {
     'gulp-download-electron': 'electron'
@@ -35,7 +39,8 @@ var options = {
 
 // Paths
 var paths = {
-  APP: ['src/index.html', 'src/browser.js'],
+  APP: ['src/index.html', 'src/browser.js', 'src/yoda.bundled.js', 'src/yoda.bundled.js.map'],
+  BUILD_FILES: ['build/index.html', 'build/browser.js', 'build/yoda.bundled.js', 'build/yoda.bundled.js.map'],
   FONTS: 'src/resources/fonts/**',
   IMAGES: 'src/resources/images/**',
   JS_FILES: ['src/scripts/*.js'],
@@ -71,24 +76,21 @@ gulp.task('download', ['clean:build'], function(cb){
 // Copy task
 gulp.task('copy', function(){
   return gulp.src(paths.APP)
-  .pipe(gulp.dest(options.dev ? paths.BUILD : paths.TMP))
-  .pipe($.livereload());
+  .pipe(gulp.dest(options.dev ? paths.BUILD : paths.TMP));
 });
 
 // Fonts task
 gulp.task('fonts', function(){
   return gulp.src(paths.FONTS)
   .pipe($.if(options.dev, $.changed(paths.BUILD)))
-  .pipe(gulp.dest(options.dev ? paths.BUILD : paths.TMP))
-  .pipe($.if(options.dev, $.livereload()));
+  .pipe(gulp.dest(options.dev ? paths.BUILD : paths.TMP));
 });
 
 // Images task
 gulp.task('images', function(){
   return gulp.src(paths.IMAGES)
   .pipe($.if(options.dev, $.changed(paths.BUILD)))
-  .pipe(gulp.dest(options.dev ? paths.BUILD : paths.TMP))
-  .pipe($.if(options.dev, $.livereload()));
+  .pipe(gulp.dest(options.dev ? paths.BUILD : paths.TMP));
 });
 
 // Styles task
@@ -101,8 +103,7 @@ gulp.task('styles', function(){
   .pipe($.if(options.dev, $.changed(paths.BUILD)))
   .pipe($.less())
   .pipe($.if(!options.dev, $.cssmin()))
-  .pipe(gulp.dest(options.dev ? paths.BUILD : paths.TMP))
-  .pipe($.if(options.dev, $.livereload()));
+  .pipe(gulp.dest(options.dev ? paths.BUILD : paths.TMP));
 });
 
 // Scripts task
@@ -115,129 +116,50 @@ gulp.task('scripts', function(){
   .pipe($.if(options.dev, $.changed(paths.BUILD)))
   .pipe($.babel({ blacklist: ['regenerator'] }))
   .pipe($.if(!options.dev, $.uglify({ mangle: false })))
-  .pipe(gulp.dest(options.dev ? paths.BUILD : paths.TMP))
-  .pipe($.if(options.dev, $.livereload()));
+  .pipe(gulp.dest(options.dev ? paths.BUILD : paths.TMP));
 });
 
-// Build task
-gulp.task('build', ['compile'], function(){
-  var s = gulp.src('').pipe($.shell([
-    'rm -rf ./release',
-    'mkdir -p <%= release %>',
-    'cp -R <%= electron_app %> <%= release_app %>',
-    'mv <%= release_electron %> <%= release_yoda %>',
-    'mkdir -p <%= release_build %> <%= release_build %>/build <%= release_modules %>',
-    'cp package.json <%= release_build %>/',
-    'cp -R ./tmp/** <%= release_build %>/build/',
-    'cp <%= release_yoda_icon %> <%= release_electron_icon %>',
-    'cp <%= release_yoda_plist %> <%= release_plist %>',
-
-    '/usr/libexec/PlistBuddy -c "Set :CFBundleVersion <%= release_version %>" <%= release_plist %>',
-    '/usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName <%= release_name %>" <%= release_plist %>',
-    '/usr/libexec/PlistBuddy -c "Set :CFBundleName <%= release_name %>" <%= release_plist %>',
-    '/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier <%= release_bundle %>" <%= release_plist %>',
-    '/usr/libexec/PlistBuddy -c "Set :CFBundleExecutable <%= release_name %>" <%= release_plist %>',
-
-    'rm -rf ./tmp'
-  ], {
-    templateData: {
-      electron_app: './cache/Electron.app',
-      release: './release/osx',
-      release_app: './release/osx/' + options.app,
-      release_build: './release/osx/' + options.app + '/Contents/Resources/app',
-      release_modules: './release/osx/' + options.app + '/Contents/Resources/app/node_modules',
-      release_electron: './release/osx/' + options.app + '/Contents/MacOS/Electron',
-      release_yoda: './release/osx/' + options.app + '/Contents/MacOS/' + options.name,
-      release_yoda_icon: options.icon,
-      release_electron_icon: './release/osx/' + options.app + '/Contents/Resources/atom.icns',
-      release_plist: './release/osx/' + options.app + '/Contents/Info.plist',
-      release_yoda_plist: options.plist,
-      release_name: options.name,
-      release_bundle: options.bundle,
-      release_version: packageJson.version
-    }
-  }));
-
-  dependencies.forEach(function(d){
-    s = s.pipe($.shell([
-      'cp -R node_modules/' + d + ' <%= release_modules %>'
-    ], {
-      templateData: {
-        release_modules: './release/osx/' + options.app + '/Contents/Resources/app/node_modules/'
-      }
-    }));
-  });
-
-  return s;
-});
-
-// Sign task
-gulp.task('sign', function(){
-  try {
-    var signing_identity = fs.readFileSync('./identity', 'utf8').trim();
-    var s = gulp.src('').pipe($.shell([
-       'codesign --deep --force --verbose --sign <%= release_identity %> <%= release_app %>/Contents/Frameworks/Electron\\ Framework.framework',
-        'codesign --deep --force --verbose --sign <%= release_identity %> <%= release_app %>/Contents/Frameworks/Electron\\ Helper\\ EH.app',
-        'codesign --deep --force --verbose --sign <%= release_identity %> <%= release_app %>/Contents/Frameworks/Electron\\ Helper\\ NP.app',
-        'codesign --deep --force --verbose --sign <%= release_identity %> <%= release_app %>/Contents/Frameworks/Electron\\ Helper.app',
-        'codesign --deep --force --verbose --sign <%= release_identity %> <%= release_app %>/Contents/Frameworks/ReactiveCocoa.framework',
-        'codesign --deep --force --verbose --sign <%= release_identity %> <%= release_app %>/Contents/Frameworks/Squirrel.framework',
-        'codesign --deep --force --verbose --sign <%= release_identity %> <%= release_app %>/Contents/Frameworks/Mantle.framework',
-        'codesign --force --verbose --sign <%= release_identity %> <%= release_app %>',
-    ], {
-      templateData: {
-        release_app: './release/osx/' + options.app,
-        release_identity: '\"' + signing_identity + '\"'
-      }
-    }));
-  } catch(err) {
-    if(err){
-      return;
-    }
+//Webpack task
+gulp.task('webpack', function(cb){
+  if (! options.dev) {
+    var minifier = new webpack.optimize.UglifyJsPlugin({
+      minimize: true
+    });
+    webpackConfig.plugins.push(minifier);
+  }
+  else {
+    webpackConfig.devtool = 'sourcemap';
   }
 
-  return s;
-});
-
-// Release task
-gulp.task('release', function(cb){
-  sequence('build', 'sign', 'dmg', 'clean:release', cb);
-});
-
-// Build a disk image file
-gulp.task('dmg', function(){
-  var s = gulp.src('').pipe($.shell([
-    'rm -rf ./dist',
-    'mkdir -p ./dist',
-    'node_modules/.bin/appdmg ./appdmg.json <%= release_dmg %>'
-  ], {
-    templateData: {
-      release_dmg: './dist/' + options.dmg
+  webpack(webpackConfig, function(error) {
+    if (error) {
+      throw error;
     }
-  }));
-
-  return s;
+    else {
+      cb();
+    }
+  });
 });
 
 // Compile task
-gulp.task('compile', ['download'], function(cb){
-  sequence('copy', 'fonts', 'images', 'styles', 'scripts', cb);
+gulp.task('compile', function(cb){
+  sequence('webpack', 'copy', 'fonts', 'images', 'styles', cb);
 });
 
 // Watch task
 gulp.task('watch', ['compile'], function(){
-  gulp.watch(paths.APP, ['copy']);
-  gulp.watch(paths.JS_FILES, ['scripts']);
-  gulp.watch(paths.CSS_FILES, ['styles']);
-
-  $.livereload.listen();
-
   var env = process.env;
   env.NODE_ENV = 'development';
-  gulp.src('')
-  .pipe($.shell(['./cache/Electron.app/Contents/MacOS/Electron .'], {
-    env: env
-  }));
+
+  Yoda.start({env: env});
+
+  shell.exec('webpack --watch --devtool source-map', {
+    async: true
+  });
+
+  gulp.watch(paths.APP, ['copy']);
+  gulp.watch(paths.CSS_FILES, ['styles']);
+  gulp.watch(paths.BUILD_FILES, Yoda.reload);
 });
 
 // Default task
