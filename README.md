@@ -9,7 +9,7 @@ Built using [ReactJS](https://facebook.github.io/react) & [Electron](http://elec
 
 ## Downloads
 The latest version of yoda can be downloaded from the [releases](https://github.com/whoisandie/yoda/releases) page.
-Please note that currently only supports osx.
+Please note that currently supports windows.
 
 ## Developers
 Requires gulp to be installed on your machine.
@@ -25,6 +25,27 @@ cd yoda && npm install
 gulp
 ```
 
+## Debug
+You can add 'debugger' to the code, just like
+``` javascript
+   // in src/scripts/actios/Actions.js
+   download(video, filename) {
+    //it will stop here
+    debugger;
+    Ydm.download(video, filename).then(download => {
+      this.dispatch({
+        id: download.id,
+        title: download.title,
+        path: download.path
+      });
+
+      this.actions.status();
+      this.actions.snapshot();
+      this.actions.progress(download);
+    });
+  }
+```
+
 To build a disk image, run `gulp release`, which will run the necessary tasks
 and create the disk image in a `dist` directory.
 
@@ -34,4 +55,4 @@ Want to make a contribution ? Fork the repo, tweak, add your changes, submit a p
 
 ## License
 
-Copyright (c) 2015 [whoisandie](http://whoisandie.com)
+Copyright (c) 2015
