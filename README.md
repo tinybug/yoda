@@ -3,7 +3,7 @@
 Yoda is a nifty osx application which enables you to browse and download videos from YouTube.
 Built using [ReactJS](https://facebook.github.io/react) & [Electron](http://electron.atom.io)
 
-![Yoda Screenshot](https://s3-us-west-2.amazonaws.com/github.whoisandie.com/yoda-screen.png)
+![Yoda Screenshot](http://i.imgur.com/7TJwweb.png)
 
 ## Downloads
 Release package comming soon !
