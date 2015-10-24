@@ -14,7 +14,7 @@ Requires gulp to be installed on your machine.
 Clone the repository, install dependencies and run `gulp`
 
 ``` bash
-git clone https://github.com/whoisandie/yoda.git
+git clone https://github.com/tinybug/yoda.git
 
 # Cd into the directory and install dependencies
 cd yoda && npm install
@@ -26,22 +26,22 @@ gulp
 ## Debug
 You can add 'debugger' to the code, just like
 ``` javascript
-   // in src/scripts/actios/Actions.js
-   download(video, filename) {
-    //it will stop here
-    debugger;
-    Ydm.download(video, filename).then(download => {
-      this.dispatch({
-        id: download.id,
-        title: download.title,
-        path: download.path
-      });
-
-      this.actions.status();
-      this.actions.snapshot();
-      this.actions.progress(download);
+ // in src/scripts/actios/Actions.js
+ download(video, filename) {
+  //it will stop here
+  debugger;
+  Ydm.download(video, filename).then(download => {
+    this.dispatch({
+      id: download.id,
+      title: download.title,
+      path: download.path
     });
-  }
+
+    this.actions.status();
+    this.actions.snapshot();
+    this.actions.progress(download);
+  });
+}
 ```
 
 To build a disk image, run `gulp release`, which will run the necessary tasks
