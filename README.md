@@ -43,6 +43,7 @@ You can add 'debugger' to the code, just like
   });
 }
 ```
+![Yoda Screenshot](http://i.imgur.com/8dpGVMm.png)
 
 To build a disk image, run `gulp release`, which will run the necessary tasks
 and create the disk image in a `dist` directory.
