@@ -1,6 +1,6 @@
 ![Yoda Title](https://s3-us-west-2.amazonaws.com/github.whoisandie.com/yoda-title.png)
 
-Yoda is a nifty osx application which enables you to browse and download videos from YouTube.
+Yoda is a nifty windows application which enables you to browse and download videos from YouTube.
 Built using [ReactJS](https://facebook.github.io/react) & [Electron](http://electron.atom.io)
 
 ![Yoda Screenshot](http://i.imgur.com/7TJwweb.png)
