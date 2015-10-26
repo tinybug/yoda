@@ -30,6 +30,7 @@
     "gulp-concat": "^2.5.2",
     "gulp-cssmin": "^0.1.6",
     "gulp-download-electron": "0.0.5",
+    "gulp-filter": "^3.0.1",
     "gulp-if": "^1.2.5",
     "gulp-less": "^3.0.3",
     "gulp-load-plugins": "^0.10.0",
@@ -52,6 +53,7 @@
     "react": "^0.13.1",
     "react-router": "^0.13.2",
     "sfx": "^0.1.1",
+    "video.js": "^5.0.2",
     "ytdl-core": "^0.5.1"
   }
 }

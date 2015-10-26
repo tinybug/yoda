@@ -39,8 +39,8 @@ var options = {
 
 // Paths
 var paths = {
-  APP: ['src/index.html', 'src/browser.js', 'src/yoda.bundled.js', 'src/yoda.bundled.js.map'],
-  BUILD_FILES: ['build/index.html', 'build/browser.js', 'build/yoda.bundled.js', 'build/yoda.bundled.js.map'],
+  APP: ['src/*.html', 'src/*.js', 'src/*.js.map'],
+  BUILD_FILES: ['build/*.html', 'build/*.css', 'build/*.js', 'build/*.js.map'],
   FONTS: 'src/resources/fonts/**',
   IMAGES: 'src/resources/images/**',
   JS_FILES: ['src/scripts/*.js'],
@@ -76,6 +76,7 @@ gulp.task('download', ['clean:build'], function(cb){
 // Copy task
 gulp.task('copy', function(){
   return gulp.src(paths.APP)
+  .pipe($.if(!options.dev, $.filter(['*', '!*.js.map'], {dot: true})))
   .pipe(gulp.dest(options.dev ? paths.BUILD : paths.TMP));
 });
 
@@ -95,7 +96,7 @@ gulp.task('images', function(){
 
 // Styles task
 gulp.task('styles', function(){
-  return gulp.src('src/styles/main.less')
+  return gulp.src('src/styles/videojs.less')
   .pipe($.plumber(function(error) {
       $.util.log($.util.colors.red('Error (' + error.plugin + '): ' + error.message + ' in ' + error.fileName));
       this.emit('end');
@@ -143,11 +144,11 @@ gulp.task('webpack', function(cb){
 
 // Compile task
 gulp.task('compile', function(cb){
-  sequence('webpack', 'copy', 'fonts', 'images', 'styles', cb);
+  sequence('copy', 'fonts', 'images', 'styles', 'webpack', cb);
 });
 
 // Watch task
-gulp.task('watch', ['compile'], function(){
+gulp.task('watch', function(){
   var env = process.env;
   env.NODE_ENV = 'development';
 
@@ -163,4 +164,6 @@ gulp.task('watch', ['compile'], function(){
 });
 
 // Default task
-gulp.task('default', ['watch']);
+gulp.task('default', function(cb) {
+  sequence('compile', 'watch', cb);
+});

@@ -3,7 +3,6 @@
 var app = require('app');
 var BrowserWindow = require('browser-window');
 var fs = require('fs');
-var ipc = require('ipc');
 var path = require('path');
 
 require('crash-reporter').start();
@@ -20,6 +19,7 @@ app.on('ready', function(){
     'frame': false,
     'show': false,
   });
+
   mainWindow.loadUrl(path.normalize('file://' + path.join(__dirname, 'index.html')));
 
   app.on('activate-with-no-open-windows', function () {
@@ -51,7 +51,3 @@ app.on('ready', function(){
     mainWindow.focus();
   });
 });
-// app.on('window-all-closed', function() {
-//   if (process.platform != 'darwin')
-//     app.quit();
-// });

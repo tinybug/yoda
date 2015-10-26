@@ -126,12 +126,15 @@ class Actions {
     return Ydm.duplicate(item);
   }
 
+  fetchDownloadURL(item) {
+    return Ydm.fetchDownloadURL(item);
+  }
+
   live(id) {
     Ydm.live(id);
   }
 
   download(video, filename) {
-    debugger;
     Ydm.download(video, filename).then(download => {
       this.dispatch({
         id: download.id,

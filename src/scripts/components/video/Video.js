@@ -2,48 +2,17 @@
 
 import React from '../../../../node_modules/react/addons';
 import {Navigation} from 'react-router';
-import Actions from './../../actions/Actions';
 import {RenderMixin} from './../../utils/Mixins';
 import VideoImage from './VideoImage';
 import VideoTitle from './VideoTitle';
 import VideoMeta from './VideoMeta';
 import VideoDuration from './VideoDuration';
+import VideoButtons from './VideoButtons';
 
 const PureRenderMixin = React.addons.PureRenderMixin;
 
 export default React.createClass({
-  mixins: [PureRenderMixin, RenderMixin, Navigation],
-
-  isLiveVideo(item){
-    let broadcastContent = item.snippet.liveBroadcastContent;
-    return (broadcastContent === 'live' || broadcastContent === 'upcoming');
-  },
-
-  handleDownload(item){
-    if(Actions.verify(item.id)){
-      Actions.prompt(item);
-    } else {
-      Actions.duplicate(item).then(group => {
-        this.transitionTo('downloads', {group: group});
-      });
-    }
-  },
-
-  handleLive(item) {
-    let id = item.id;
-    Actions.live(id);
-  },
-
-  handleVideo(e) {
-    e.preventDefault();
-    let item = this.props.video;
-
-    if(this.isLiveVideo(item)){
-      this.handleLive(item);
-    } else {
-      this.handleDownload(item);
-    }
-  },
+  mixins: [PureRenderMixin, RenderMixin],
 
   renderDelete() {
     return (
@@ -55,11 +24,12 @@ export default React.createClass({
 
   renderVideo(item) {
     return (
-      <div className="video-detail" onClick={this.handleVideo}>
+      <div className="video-detail">
         <div className="video-image">
           <VideoImage title={item.snippet.title} src={item.snippet.thumbnails.medium.url} />
+          <VideoButtons video={item} />
           <VideoDuration duration={item.contentDetails.duration} />
-        </div>
+      </div>
 
         <div className="video-content">
           <VideoTitle title={item.snippet.title} />

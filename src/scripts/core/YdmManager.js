@@ -80,6 +80,19 @@ export default {
     });
   },
 
+  fetchDownloadURL(video) {
+    let url = `http://youtube.com/watch?v=${video.id}`;
+
+    return new Promise((resolve, reject) => {
+      ytdl.getInfo(url, {downloadURL: true}, function(err, info) {
+        if(err) {
+          reject(err);
+        }
+        resolve(info.formats[0].url);
+      });
+    });
+  },
+
   duplicate(item) {
     let downloads = this.parse(localStorage.getItem('downloads'));
     let video = downloads.find(download => {

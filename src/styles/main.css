@@ -2551,7 +2551,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 .video .video-detail {
   color: #333;
   display: block;
-  cursor: pointer;
+  cursor: default;
 }
 .video .video-detail:hover,
 .video .video-detail:focus {
@@ -2614,6 +2614,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   border: 1px #aaa solid;
   overflow: hidden;
 }
+.video .video-image:hover .video-buttons {
+  opacity: 0.8;
+}
 .video .video-image > span {
   padding: 2px 4px;
   background: #222;
@@ -2627,6 +2630,33 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 .video .video-image > img {
   width: 100%;
   height: 94px;
+}
+.video .video-image .video-buttons {
+  position: absolute;
+  bottom: 30px;
+  left: 25px;
+  background: #fefefe;
+  border-radius: 4px;
+  opacity: 0;
+}
+.video .video-image .video-buttons .play {
+  margin: 3px 1.5px 3px 3px;
+}
+.video .video-image .video-buttons .download {
+  margin: 3px 3px 3px 1.5px;
+}
+.video .video-image .video-buttons .play,
+.video .video-image .video-buttons .download {
+  border: 1px #b8b8b8 solid;
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 5px;
+}
+.video .video-image .video-buttons .play:hover,
+.video .video-image .video-buttons .download:hover {
+  cursor: pointer;
+  background: #233930;
+  color: #f3f3f3;
 }
 .video-thumbnail {
   opacity: 1;

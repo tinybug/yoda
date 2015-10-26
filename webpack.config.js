@@ -1,10 +1,13 @@
 var webpack = require("webpack");
 
 module.exports = {
-  entry: './src/scripts/main.js',
+  entry: {
+    yoda: './src/scripts/main.js',
+    player: './src/scripts/player.js'
+  },
   output: {
-    path: __dirname + '/src',
-    filename: 'yoda.bundled.js'
+    path: __dirname + '/build',
+    filename: '[name].bundled.js'
   },
   target: 'atom',
   module: {
