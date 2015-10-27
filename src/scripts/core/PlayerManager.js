@@ -8,7 +8,7 @@ export default {
       width: '1080px',
       height: '720px',
       autoplay: false,
-      //bigPlayButton: false,
+      bigPlayButton: false,
       controls: true,
       controlBar: {
         playToggle: true,
@@ -41,9 +41,23 @@ export default {
     }
   },
 
+  stopCurTrack() {
+    this._player.pause();
+    this._player.src('');
+    this._player.play();
+    this._errDisplayDom = document.getElementsByClassName('vjs-error-display')[0];
+    if(this._errDisplayDom) {
+      this._errDisplayDom.style.visibility = "hidden";
+    }
+  },
+
   playTrack(playerDOM, track) {
     if(! this._playerDOM) {
       this._playerDOM = playerDOM;
+    }
+
+    if(this._errDisplayDom) {
+      this._errDisplayDom.style.visibility = "visible";
     }
 
     this.ready().then(()=>{

@@ -80,7 +80,7 @@ export default {
     });
   },
 
-  fetchDownloadURL(video) {
+  fetchWatchInfo(video) {
     let url = `http://youtube.com/watch?v=${video.id}`;
 
     return new Promise((resolve, reject) => {
@@ -88,7 +88,7 @@ export default {
         if(err) {
           reject(err);
         }
-        resolve(info.formats[0].url);
+        resolve({url: info.formats[0].url, title: info.title});
       });
     });
   },

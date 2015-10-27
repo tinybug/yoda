@@ -126,8 +126,8 @@ class Actions {
     return Ydm.duplicate(item);
   }
 
-  fetchDownloadURL(item) {
-    return Ydm.fetchDownloadURL(item);
+  fetchWatchInfo(item) {
+    return Ydm.fetchWatchInfo(item);
   }
 
   live(id) {

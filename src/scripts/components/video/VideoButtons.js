@@ -52,28 +52,28 @@ export default React.createClass({
       win = new BrowserWindow({
         'width': 1080,
         'height': 720,
-        'standard-window': false,
-        'fullscreen': false,
-        'resizable': false,
-        'frame': false,
-        'show': false
+        'auto-hide-menu-bar': true,
+        'use-content-size': true,
       });
 
+      win.openDevTools();
       bIsFirstPlay = true;
     }
 
     if(bIsFirstPlay) {
       let loc = window.location.pathname;
       let dir = loc.substring(0, loc.lastIndexOf('/'));
+      win.setTitle('Yoda');
       win.loadUrl(Path.normalize('file://' + Path.join(dir, 'player.html')));
       win.webContents.on('did-finish-load', function() {
-        win.setTitle('Yoda');
         win.show();
         win.focus();
       });
       win.on('close', () => {
         win = null;
       }, false);
+    } else {
+      win.webContents.send('play-video');
     }
 
     bIsFirstPlay = false;
@@ -82,9 +82,10 @@ export default React.createClass({
     if(this.isLiveVideo(item)) {
       this.handleLive(item);
     } else {
-      Actions.fetchDownloadURL(item).then(url => {
-          console.log(url);
-          win.webContents.send('url', url);
+      Actions.fetchWatchInfo(item).then(info => {
+          console.log(info);
+          win.webContents.send('info', info);
+          win.setTitle(info.title + ' - Yoda');
         }, err => {
           console.log(err);
         }

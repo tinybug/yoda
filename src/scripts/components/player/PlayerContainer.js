@@ -20,8 +20,12 @@ export default React.createClass({
     playerDOM.classList.add('vjs-default-skin');
     this.refs.playerContainer.getDOMNode().appendChild(playerDOM);
 
-    ipc.on('url', function (url) {
-      Player.playTrack(playerDOM, url);
+    ipc.on('play-video', function() {
+      Player.stopCurTrack();
+    });
+
+    ipc.on('info', function (info) {
+      Player.playTrack(playerDOM, info.url);
     });
 
   },
