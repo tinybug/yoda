@@ -11,7 +11,7 @@ Please note that currently supports windows.
 
 ## Play
 Just click play button, you can play the video immediately
-http://i.imgur.com/2gNDhew.png
+![Yoda Screenshot](http://i.imgur.com/2gNDhew.png)
 
 ## Developers
 Requires gulp to be installed on your machine.
