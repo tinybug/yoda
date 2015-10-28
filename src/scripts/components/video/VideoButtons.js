@@ -56,7 +56,6 @@ export default React.createClass({
         'use-content-size': true,
       });
 
-      win.openDevTools();
       bIsFirstPlay = true;
     }
 
