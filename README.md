@@ -9,6 +9,10 @@ Built using [ReactJS](https://facebook.github.io/react) & [Electron](http://elec
 Release package comming soon !
 Please note that currently supports windows.
 
+## Play
+Just click play button, you can play the video immediately
+http://i.imgur.com/2gNDhew.png
+
 ## Developers
 Requires gulp to be installed on your machine.
 Clone the repository, install dependencies and run `gulp`
