@@ -96,7 +96,7 @@ gulp.task('images', function(){
 
 // Styles task
 gulp.task('styles', function(){
-  return gulp.src('src/styles/videojs.less')
+  return gulp.src('src/styles/*.less')
   .pipe($.plumber(function(error) {
       $.util.log($.util.colors.red('Error (' + error.plugin + '): ' + error.message + ' in ' + error.fileName));
       this.emit('end');
